@@ -53,35 +53,7 @@ buttonSubmit.addEventListener('click', (e) => {
     
 })
 
-// function addMessage (e){
-//     e.preventDefault()
-//     console.log("ENTRO MENSAE")
-//     const mensaje = {
-//         author: {
-//             id: document.getElementById('email').value,
-//             nombre: document.getElementById('username').value,
-//             apellido: document.getElementById('apellido').value,
-//             edad: document.getElementById('edad').value,
-//             alias: document.getElementById('alias').value,
-//             avatar: document.getElementById('avatar').value,
-//         },
-//         text: document.getElementById('texto').value,
-//         date: new Date
-//     }
- 
-//     Socket.emit('new-message', mensaje)
-//     document.getElementById('texto').value = ''
-//     document.getElementById('texto').focus()
 
-//     return false
-    
-// }
-
-// const message = (msg) => {
-//     return (`<div class='text-justify mt-2'>
-//     <strong class="text-primary fw-bold">${msg.author.nombre} <span class='text-dark '>[<span class='text-danger'>${date} ${hours}</span>]</span></strong>:
-//     <em class='text-success'>${msg.text}</em> </div>`)
-// }
 
 
 fetch("/api/productos-test")
