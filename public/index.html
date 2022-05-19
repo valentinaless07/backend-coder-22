@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>WebSockets</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"
+        integrity="sha512-RNLkV3d+aLtfcpEyFG8jRbnWHxUqVZozacROI4J2F1sTaDqo1dPQYs01OMi1t1w9Y2FdbSCDSQ2ZVdAC8bzgAg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body class="bg-light">
+    <div class="d-flex justify-content-center align-items-center flex-column">
+        <h1 class="mt-5">Bienvenido</h1>
+
+        <h2 class="mt-5">Ingresa un producto:</h2>
+
+        <form class="d-flex flex-column mt-5 justify-content-between" id="formProduct" action="/productos"
+            method="POST">
+            <div class="mt-1 d-flex flex-column align-items-center justify-content-center">
+                <label>Nombre del Producto:</label>
+                <input name="title" class="form-control" placeholder="Ingresa un nombre" />
+            </div>
+            <div class="mt-5 d-flex flex-column align-items-center justify-content-center">
+                <label>Precio del Producto:</label>
+                <input name="price" class="form-control" placeholder="Ingresa un precio" />
+            </div>
+            <div class="mt-5 d-flex flex-column align-items-center justify-content-center">
+                <label>Imagen del Producto:</label>
+                <input name="thumbnail" class="form-control" placeholder="Ingresa la URL de una imagen" />
+            </div>
+
+            <button type="submit" class="btn btn-outline-secondary rounded mt-5">Crear Producto</button>
+
+        </form>
+
+        <div id="productos" class="w-75">
+
+        </div>
+        <form class="bg-white p-5 bg-gradient w-100 mt-5 d-flex justify-content-center align-items-center flex-column"
+            onsubmit="return addMessage(this)" autocomplete="off">
+            <h2 class="text-primary">Centro de mensajes</h2>
+            <input type="text" id="username" placeholder="Email" class="mt-5 w-25 mb-5 form-control" required />
+            <div id="messages" class="border-top border-bottom pb-2 pt-2"></div>
+
+            <div class="mt-5 d-flex justify-content-center w-25">
+
+                <input type="text" id="texto" placeholder="Texto" class="form-control w-50" />
+                <input type="submit" value="Enviar!" class="ml-3 btn btn-outline-secondary rounded" />
+            </div>
+
+        </form>
+
+
+    </div>
+    <script src="./js/main.js"></script>
+</body>
+
+</html>
