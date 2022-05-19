@@ -29,7 +29,7 @@ const io = new Server(server, {
 
     socket.on('new-message', async function(data){
         await postMessage(data)
-        getMessages().then(msgs => socket.emit('messages', normalizeMsg(msgs)))
+        socket.emit('messages', await getMessages())
        
     })
 

@@ -2,17 +2,24 @@ const Socket = io.connect()
 
 
 
-
 Socket.on('messages', function (data){
+    console.log(data)
+    
+    const autoresSchema = new normalizr.schema.Entity('authors')
+    const msjsSchema = new normalizr.schema.Entity('messages', { author: autoresSchema }, { idAttribute: '_id' })
+    const fileSchema = [msjsSchema]
+    const denormalized = normalizr.denormalize(data.result, fileSchema, data.entities)
    
-    render(data)
+    
+    render(denormalized)
 })
 
 
 function render(data) {
     
     let html = data.map(function(elem, index){
-      const f = new Date(elem.date)
+        
+      const f = new Date(elem._doc.date)
       
       const date = f.getDate() + "/"+ (f.getMonth() +1) + "/" +f.getFullYear();
       const hour = f.getHours() < 10 ? '0'+f.getHours() : f.getHours()
@@ -20,8 +27,8 @@ function render(data) {
       const seconds = f.getSeconds() < 10 ? '0'+f.getSeconds() : f.getSeconds()
       const hours = hour + ':' + minutes + ':' + seconds
         return(`<div class='text-justify mt-2'>
-            <strong class="text-primary fw-bold">${elem.author.nombre} <span class='text-dark '>[<span class='text-danger'>${date} ${hours}</span>]</span></strong>:
-            <em class='text-success'>${elem.text}</em> </div>`)
+            <strong class="text-primary fw-bold">${elem._doc.author.nombre} <span class='text-dark '>[<span class='text-danger'>${date} ${hours}</span>]</span></strong>:
+            <em class='text-success'>${elem._doc.text}</em> </div>`)
     }).join(" ")
     document.getElementById('messages').innerHTML = html
 }
@@ -52,36 +59,6 @@ buttonSubmit.addEventListener('click', (e) => {
     
     
 })
-
-// function addMessage (e){
-//     e.preventDefault()
-//     console.log("ENTRO MENSAE")
-//     const mensaje = {
-//         author: {
-//             id: document.getElementById('email').value,
-//             nombre: document.getElementById('username').value,
-//             apellido: document.getElementById('apellido').value,
-//             edad: document.getElementById('edad').value,
-//             alias: document.getElementById('alias').value,
-//             avatar: document.getElementById('avatar').value,
-//         },
-//         text: document.getElementById('texto').value,
-//         date: new Date
-//     }
- 
-//     Socket.emit('new-message', mensaje)
-//     document.getElementById('texto').value = ''
-//     document.getElementById('texto').focus()
-
-//     return false
-    
-// }
-
-// const message = (msg) => {
-//     return (`<div class='text-justify mt-2'>
-//     <strong class="text-primary fw-bold">${msg.author.nombre} <span class='text-dark '>[<span class='text-danger'>${date} ${hours}</span>]</span></strong>:
-//     <em class='text-success'>${msg.text}</em> </div>`)
-// }
 
 
 fetch("/api/productos-test")

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { normalizeMsg } from './normalizr.js';
 
 
 try {
@@ -36,7 +37,8 @@ const postMessage = async (msg) => {
 const getMessages  = async () => {
     try {
         const messages = await msjModel.find();
-        return messages;
+        
+        return normalizeMsg(messages);
     } catch (error) {
         throw new Error(error);
     }
