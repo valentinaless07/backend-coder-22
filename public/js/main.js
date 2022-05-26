@@ -1,9 +1,8 @@
 const Socket = io.connect()
 
 
-
 Socket.on('messages', function (data){
-    console.log(data)
+    
     
     const autoresSchema = new normalizr.schema.Entity('authors')
     const msjsSchema = new normalizr.schema.Entity('messages', { author: autoresSchema }, { idAttribute: '_id' })
@@ -93,3 +92,20 @@ function renderProducts(products) {
     });
 }
 
+fetch("/getuser")
+    .then(res => res.json())
+    .then(resp => {
+        document.getElementById("welcome-user").innerHTML = " "+resp;
+    })
+    .catch(error => console.log(error));
+
+
+    document.getElementById("logout").addEventListener
+    ('click', (e) => {
+        e.preventDefault()
+        fetch("/logout")
+            .then(response => response.json())
+            .finally(() => {
+                window.location.href = "/msg";
+            })
+    })    
