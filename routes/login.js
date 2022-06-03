@@ -1,30 +1,28 @@
 import { Router } from "express";
-
+import passport from "passport"
 
 const router = Router()
 
 
 
 
-router.post('/setuser', (req, res) => {
-    try {
-        process.env.username = req.body.user;
-        req.session.user = req.body.user;
-        res.redirect("/")
-    } catch (error) {
-        console.log(error)
-    }
+// router.post('/setuser', (req, res) => {
+//     console.log("setuser")
+//     try {
+//         process.env.username = req.body.user;
+//         req.session.user = req.body.user;
+//         res.redirect("/")
+//     } catch (error) {
+//         console.log(error)
+//     }
     
     
-})
+// })
 
 router.get('/getuser', (req, res) => {
     try {
        
-        if (req.session?.user) {
-            res.status(200).json(req.session.user)
-        } 
-        else if(process?.env?.username){
+        if(process?.env?.username){
             res.status(200).json(process.env.username)
         }
         else {
@@ -37,18 +35,22 @@ router.get('/getuser', (req, res) => {
 
 router.get('/logout', (req, res) => {
     try {
-        req.session.destroy((err) => {
-            if (err) {console.log(err);} 
+ 
             
-            else {
+           
+                req.logout(function(err) {
+                    if (err) { return err; }
+                    res.redirect('/msg');
+                  });
                 
-                res.redirect('/msg');
-            }
-        })
+            
+        
     } catch (err) {
         console.log(err);
     }
 })
+
+router.post('/login', passport.authenticate("login", {successRedirect: "/", failureRedirect: "/loginerror", passReqToCallback: true}))
 
 
 

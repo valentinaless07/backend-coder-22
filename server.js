@@ -8,8 +8,12 @@ import {postMessage, getMessages} from "./controllers/messages.js"
 import path from 'path';
 import { fileURLToPath } from 'url';
 import MongoStore from 'connect-mongo';
+import { userModel } from './controllers/users.js';
+import passport from "passport"
+import localStrategy from "passport-local"
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+import * as passportAuth from "./passport/auth.js"
 
 
 
@@ -25,17 +29,23 @@ app.use(session({
 app.use("/public", express.static('./public/'));
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
+app.use(passport.initialize())
+app.use(passport.session())
 app.use('/api', router)
 app.use(login)
+
+
 
 const server = app.listen(8080, () => {
     console.log(`Server running on port: ${server.address().port}`)
 })
 
+
+
 app.get('/', async (req,res) => {
     try {
         
-        if (req.session?.user) {
+        if (req.isAuthenticated()) {
             res.sendFile(__dirname + '/public/index.html');
         } 
         else{
@@ -56,6 +66,40 @@ app.get('/msg', (req, res) => {
         console.log(err);
     }
 })
+
+app.get('/register', (req, res) => {
+
+   
+    try {
+        res.sendFile(__dirname + '/public/register.html');
+    } catch (err) {
+        console.log(err);
+    }
+})
+
+app.get('/loginerror', (req, res) => {
+
+   
+    try {
+        res.sendFile(__dirname + '/public/loginError.html');
+    } catch (err) {
+        console.log(err);
+    }
+})
+
+app.get('/signupError', (req, res) => {
+
+   
+    try {
+        res.sendFile(__dirname + '/public/signupError.html');
+    } catch (err) {
+        console.log(err);
+    }
+})
+
+app.post('/register', passport.authenticate("signup", {successRedirect: "/", failureRedirect: "/signupError", passReqToCallback: true}))
+
+
 
 
 server.on('error', error=> console.log(`Error ${error}`))

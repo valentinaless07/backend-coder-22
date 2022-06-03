@@ -9,8 +9,8 @@
     <title>Document</title>
 </head>
 <body class="bg-light">
-    <form class="w-100 p-5 d-flex justify-content-center flex-column align-items-center" method="post" action="/login">
-        <h2>Iniciar Sesión</h2>
+    <form class="w-100 p-5 d-flex justify-content-center flex-column align-items-center" method="post" action="/register">
+        <h2>Registrar cuenta</h2>
         <div class="form-group mt-5 w-50">
             <label for="email">Ingresar Email</label>
             <input type="text" class="form-control w-100" name="email">
@@ -20,10 +20,10 @@
             <input type="password" class="form-control w-100" name="password">
         </div>
         <div class="d-flex justify-content-around w-25 mt-3">
-            <button type="submit" class="btn btn-primary mt-2 p-2" >Ingresar</button>
-            <button  id="to_register" class="btn btn-primary mt-2 p-2" >Registrarse</button>
+            <button  class="btn btn-primary mt-2 p-2" >Registrarse</button>
+            <button id="to_login" type="submit" class="btn btn-primary mt-2 p-2" >Ingresar</button>
         </div>
     </form>
-    <script src='/public/js/loginForm.js'></script>
+    <script src='/public/js/register.js'></script>
 </body>
 </html>

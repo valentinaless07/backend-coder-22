@@ -104,8 +104,7 @@ fetch("/getuser")
     ('click', (e) => {
         e.preventDefault()
         fetch("/logout")
-            .then(response => response.json())
-            .finally(() => {
+            .then(() => {
                 window.location.href = "/msg";
             })
     })    
