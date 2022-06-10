@@ -1,9 +1,12 @@
 import mongoose from 'mongoose';
 import { normalizeMsg } from './normalizr.js';
 
+import dotenv from "dotenv"
+
+dotenv.config()
 
 try {
-    mongoose.connect("mongodb+srv://valentinaless07:vxEEEVwmM2neKCia@cluster0.6p3mf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+    mongoose.connect(`mongodb+srv://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_KEY}@cluster0.6p3mf.mongodb.net/${process.env.MONGO_DB_NAME}?retryWrites=true&w=majority`)
     console.log("Conectado a mongoDb");
 } catch (error) {
     console.log(error);

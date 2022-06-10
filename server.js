@@ -14,6 +14,9 @@ import localStrategy from "passport-local"
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 import * as passportAuth from "./passport/auth.js"
+import parseArgs from "minimist"
+
+const args = parseArgs(["--port", process.argv[2]?.toString() || 8080]);
 
 
 
@@ -36,7 +39,7 @@ app.use(login)
 
 
 
-const server = app.listen(8080, () => {
+const server = app.listen(args.port, () => {
     console.log(`Server running on port: ${server.address().port}`)
 })
 
@@ -95,6 +98,36 @@ app.get('/signupError', (req, res) => {
     } catch (err) {
         console.log(err);
     }
+})
+
+app.get('/info', (req, res) => {
+    try {
+        res.sendFile(__dirname + '/public/info.html');
+    } catch (err) {
+        console.log(err);
+    }
+})
+
+app.get('/getinfo', (req, res) => {
+    try {
+        
+        res.status(200).json({
+            args: args.port,
+            version: process.version,
+            platform: process.platform,
+            pid: process.pid,
+            cwd: process.cwd(),
+            execPath: process.argv[1],
+            memory: process.memoryUsage().rss
+        })
+    } catch (err) {
+        console.log(err);
+    }
+})
+
+app.get('/api/randoms', (req, res) => {
+
+   
 })
 
 app.post('/register', passport.authenticate("signup", {successRedirect: "/", failureRedirect: "/signupError", passReqToCallback: true}))
