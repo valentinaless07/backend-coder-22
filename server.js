@@ -15,6 +15,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 import * as passportAuth from "./passport/auth.js"
 import parseArgs from "minimist"
+import { random } from './routes/random.js';
 
 const args = parseArgs(["--port", process.argv[2]?.toString() || 8080]);
 
@@ -35,6 +36,7 @@ app.use(express.urlencoded({extended: true}))
 app.use(passport.initialize())
 app.use(passport.session())
 app.use('/api', router)
+app.use("/", random)
 app.use(login)
 
 
@@ -125,10 +127,6 @@ app.get('/getinfo', (req, res) => {
     }
 })
 
-app.get('/api/randoms', (req, res) => {
-
-   
-})
 
 app.post('/register', passport.authenticate("signup", {successRedirect: "/", failureRedirect: "/signupError", passReqToCallback: true}))
 
