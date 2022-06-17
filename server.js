@@ -8,7 +8,6 @@ import {postMessage, getMessages} from "./controllers/messages.js"
 import path from 'path';
 import { fileURLToPath } from 'url';
 import MongoStore from 'connect-mongo';
-import { userModel } from './controllers/users.js';
 import passport from "passport"
 import localStrategy from "passport-local"
 const __filename = fileURLToPath(import.meta.url);
@@ -16,8 +15,53 @@ const __dirname = path.dirname(__filename);
 import * as passportAuth from "./passport/auth.js"
 import parseArgs from "minimist"
 import { random } from './routes/random.js';
+import os from "os"
+import cluster from 'cluster';
+import http from "http"
 
 const args = parseArgs(["--port", process.argv[2]?.toString() || 8080]);
+
+const forkorcluster = parseArgs(["--mode", process.argv[3] || "FORK"]).mode
+
+
+
+const numCPUs = os.cpus().length
+
+if(forkorcluster === "CLUSTER"){
+    if(cluster.isPrimary){
+        for(let i = 0; i < numCPUs; i++){
+            cluster.fork()
+        }
+    
+        cluster.on("exit", (worker, code, signal) => {
+            console.log(`worker ${worker.process.pid} died`)
+            
+        })
+    } else {
+        http.createServer((req, res) => {
+            res.writeHead(200)
+            res.end("Server")
+        }).listen(8000)
+        console.log(`Worker ${process.pid} started`)
+    }
+}
+
+ else if (forkorcluster === "FORK"){
+    const server = http.createServer((req, res) => {
+        res.writeHead(200)
+        res.end("Server")
+    }).listen(args.port, () => {
+        console.log(`Server on port ${args.port} || Worker ${process.pid} started!`);
+      });
+    
+      server.on('error', (e) => {
+        console.log('Error del servidor.');
+      });
+      process.on('exit', (code) => {
+        console.log('Exit code -> ', code);
+      });
+ }
+
 
 
 
@@ -41,9 +85,9 @@ app.use(login)
 
 
 
-const server = app.listen(args.port, () => {
-    console.log(`Server running on port: ${server.address().port}`)
-})
+// const server = app.listen(args.port, () => {
+//     console.log(`Server running on port: ${server.address().port}`)
+// })
 
 
 
@@ -120,7 +164,8 @@ app.get('/getinfo', (req, res) => {
             pid: process.pid,
             cwd: process.cwd(),
             execPath: process.argv[1],
-            memory: process.memoryUsage().rss
+            memory: process.memoryUsage().rss,
+            numCPUs
         })
     } catch (err) {
         console.log(err);
@@ -133,24 +178,24 @@ app.post('/register', passport.authenticate("signup", {successRedirect: "/", fai
 
 
 
-server.on('error', error=> console.log(`Error ${error}`))
+// server.on('error', error=> console.log(`Error ${error}`))
 
-const io = new Server(server, {
+// const io = new Server(server, {
     
-    // ...
-  });
+//     // ...
+//   });
 
-  io.on("connection", async (socket) => {
-    console.log('Un cliente se ha conectado')
+//   io.on("connection", async (socket) => {
+//     console.log('Un cliente se ha conectado')
 
 
-    socket.emit('messages', await getMessages())
+//     socket.emit('messages', await getMessages())
 
-    socket.on('new-message', async function(data){
-        await postMessage(data)
-        const messages = await getMessages()
-        socket.emit('messages', messages)
+//     socket.on('new-message', async function(data){
+//         await postMessage(data)
+//         const messages = await getMessages()
+//         socket.emit('messages', messages)
        
-    })
+//     })
 
-});
+// });
