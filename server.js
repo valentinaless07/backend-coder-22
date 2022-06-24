@@ -3,21 +3,47 @@ import { router } from './routes/index.js'
 import session from 'express-session';
 import { login } from './routes/login.js';
 import { Server } from "socket.io";
-const app = express()
 import {postMessage, getMessages} from "./controllers/messages.js"
 import path from 'path';
 import { fileURLToPath } from 'url';
 import MongoStore from 'connect-mongo';
 import passport from "passport"
 import localStrategy from "passport-local"
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 import * as passportAuth from "./passport/auth.js"
 import parseArgs from "minimist"
 import { random } from './routes/random.js';
 import os from "os"
 import cluster from 'cluster';
 import http from "http"
+import compression from 'compression';
+import log4js from 'log4js';
+
+const app = express()
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(compression())
+
+
+log4js.configure({
+    appenders: {
+        miLoggerConsole: {type: "console"},
+        miLoggerFileWarning: {type: "file", filename: "warn.log"},
+        miLoggerFileError: {type: "file", filename: "error.log"}
+    },
+    categories: {
+        default: {appenders: ["miLoggerConsole"], level: "trace"},
+        info: {appenders: ["miLoggerConsole"], level: "info"},
+        warn: {appenders: ["miLoggerFileWarning"], level: "warn"},
+        error: {appenders: ["miLoggerFileWarning"], level: "error"}
+    }
+})
+
+
+const loggerInfo = log4js.getLogger('info');
+const loggerWarn = log4js.getLogger('warn');
+const loggerError = log4js.getLogger('error');
+
 
 const args = parseArgs(["--port", process.argv[2]?.toString() || 8080]);
 
@@ -29,12 +55,15 @@ const numCPUs = os.cpus().length
 
 if(forkorcluster === "CLUSTER"){
     if(cluster.isPrimary){
+
+        loggerInfo.info(`Master ${process.pid} is running`);
+
         for(let i = 0; i < numCPUs; i++){
             cluster.fork()
         }
     
         cluster.on("exit", (worker, code, signal) => {
-            console.log(`worker ${worker.process.pid} died`)
+            loggerInfo.info(`worker ${worker.process.pid} died`)
             
         })
     } else {
@@ -42,7 +71,7 @@ if(forkorcluster === "CLUSTER"){
             res.writeHead(200)
             res.end("Server")
         }).listen(8000)
-        console.log(`Worker ${process.pid} started`)
+        loggerInfo.info(`Worker ${process.pid} started`)
     }
 }
 
@@ -51,14 +80,14 @@ if(forkorcluster === "CLUSTER"){
         res.writeHead(200)
         res.end("Server")
     }).listen(args.port, () => {
-        console.log(`Server on port ${args.port} || Worker ${process.pid} started!`);
+        loggerInfo.info(`Server on port ${args.port} || Worker ${process.pid} started!`);
       });
     
       server.on('error', (e) => {
-        console.log('Error del servidor.');
+        loggerError.error('Error del servidor.');
       });
       process.on('exit', (code) => {
-        console.log('Exit code -> ', code);
+        loggerError.info('Exit code -> ', code);
       });
  }
 
@@ -103,7 +132,7 @@ app.get('/', async (req,res) => {
         }
         
     } catch (error) {
-        console.log(error);
+        loggerError.error(error);
     }
 })
 
@@ -112,7 +141,7 @@ app.get('/msg', (req, res) => {
     try {
         res.sendFile(__dirname + '/public/message.html');
     } catch (err) {
-        console.log(err);
+        loggerError.error(err);
     }
 })
 
@@ -122,7 +151,7 @@ app.get('/register', (req, res) => {
     try {
         res.sendFile(__dirname + '/public/register.html');
     } catch (err) {
-        console.log(err);
+        loggerError.error(err);
     }
 })
 
@@ -132,7 +161,7 @@ app.get('/loginerror', (req, res) => {
     try {
         res.sendFile(__dirname + '/public/loginError.html');
     } catch (err) {
-        console.log(err);
+        loggerError.error(err);
     }
 })
 
@@ -142,7 +171,7 @@ app.get('/signupError', (req, res) => {
     try {
         res.sendFile(__dirname + '/public/signupError.html');
     } catch (err) {
-        console.log(err);
+        loggerError.error(err);
     }
 })
 
@@ -150,7 +179,7 @@ app.get('/info', (req, res) => {
     try {
         res.sendFile(__dirname + '/public/info.html');
     } catch (err) {
-        console.log(err);
+        loggerError.error(err);
     }
 })
 
@@ -168,7 +197,7 @@ app.get('/getinfo', (req, res) => {
             numCPUs
         })
     } catch (err) {
-        console.log(err);
+        loggerError.error(err);
     }
 })
 
