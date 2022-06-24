@@ -47,7 +47,7 @@ const loggerError = log4js.getLogger('error');
 
 const args = parseArgs(["--port", process.argv[2]?.toString() || 8080]);
 
-const forkorcluster = parseArgs(["--mode", process.argv[3] || "FORK"]).mode
+const forkorcluster = parseArgs(["--mode", process.argv[3] || "CLUSTER"]).mode
 
 
 
@@ -77,8 +77,7 @@ if(forkorcluster === "CLUSTER"){
 
  else if (forkorcluster === "FORK"){
     const server = http.createServer((req, res) => {
-        res.writeHead(200)
-        res.end("Server")
+        
     }).listen(args.port, () => {
         loggerInfo.info(`Server on port ${args.port} || Worker ${process.pid} started!`);
       });
@@ -114,9 +113,9 @@ app.use(login)
 
 
 
-// const server = app.listen(args.port, () => {
-//     console.log(`Server running on port: ${server.address().port}`)
-// })
+const server = app.listen(args.port, () => {
+    console.log(`Server running on port: ${server.address().port}`)
+})
 
 
 
