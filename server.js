@@ -45,7 +45,7 @@ const loggerWarn = log4js.getLogger('warn');
 const loggerError = log4js.getLogger('error');
 
 
-const args = parseArgs(["--port", process.argv[2]?.toString() || 8080]);
+const args = parseArgs(["--port", process.argv[2]?.toString()]);
 
 const forkorcluster = parseArgs(["--mode", process.argv[3] || "CLUSTER"]).mode
 
@@ -113,7 +113,7 @@ app.use(login)
 
 
 
-const server = app.listen(args.port, () => {
+const server = app.listen(args.port || process.env.PORT || 8080, () => {
     console.log(`Server running on port: ${server.address().port}`)
 })
 
