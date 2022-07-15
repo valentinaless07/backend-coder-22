@@ -206,24 +206,23 @@ app.post('/register', passport.authenticate("signup", {successRedirect: "/", fai
 
 
 
-// server.on('error', error=> console.log(`Error ${error}`))
 
-// const io = new Server(server, {
+const io = new Server(server, {
     
-//     // ...
-//   });
+    // ...
+  });
 
-//   io.on("connection", async (socket) => {
-//     console.log('Un cliente se ha conectado')
+  io.on("connection", async (socket) => {
+    console.log('Un cliente se ha conectado')
 
 
-//     socket.emit('messages', await getMessages())
+    socket.emit('messages', await getMessages())
 
-//     socket.on('new-message', async function(data){
-//         await postMessage(data)
-//         const messages = await getMessages()
-//         socket.emit('messages', messages)
+    socket.on('new-message', async function(data){
+        await postMessage(data)
+        const messages = await getMessages()
+        socket.emit('messages', messages)
        
-//     })
+    })
 
-// });
+});

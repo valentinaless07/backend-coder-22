@@ -6,7 +6,7 @@ dotenv.config()
 
 
 try {
-    mongoose.connect(`mongodb+srv://valentinaless07:vxEEEVwmM2neKCia@cluster0.6p3mf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`)
+    mongoose.connect("mongodb+srv://valentinaless07:vxEEEVwmM2neKCia@cluster0.6p3mf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
     
 } catch (error) {
     console.log(error);

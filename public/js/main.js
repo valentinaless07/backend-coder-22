@@ -1,17 +1,19 @@
-const Socket = io.connect()
 
 
-Socket.on('messages', function (data){
+// const Socket = io.connect()
+
+
+// Socket.on('messages', function (data){
     
     
-    const autoresSchema = new normalizr.schema.Entity('authors')
-    const msjsSchema = new normalizr.schema.Entity('messages', { author: autoresSchema }, { idAttribute: '_id' })
-    const fileSchema = [msjsSchema]
-    const denormalized = normalizr.denormalize(data.result, fileSchema, data.entities)
+//     const autoresSchema = new normalizr.schema.Entity('authors')
+//     const msjsSchema = new normalizr.schema.Entity('messages', { author: autoresSchema }, { idAttribute: '_id' })
+//     const fileSchema = [msjsSchema]
+//     const denormalized = normalizr.denormalize(data.result, fileSchema, data.entities)
    
     
-    render(denormalized)
-})
+//     render(denormalized)
+// })
 
 
 function render(data) {
@@ -63,6 +65,7 @@ buttonSubmit.addEventListener('click', (e) => {
 fetch("/api/productos-test")
     .then(res => res.json())
     .then(products => {
+        console.log(products)
         renderProducts(products);
     })
     .catch(error => console.log(error));

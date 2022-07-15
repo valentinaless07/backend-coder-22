@@ -1,19 +1,12 @@
-import faker from "@faker-js/faker";
 import { Router } from "express";
+import { getProducts } from "../controllers/products.js";
 
 
 const router = Router()
 
 router.get('/productos-test', async (req,res) => {
     try {
-        let products = [];
-        for (let i = 0; i < 5; i++) {
-            products.push({
-                title: faker.commerce.product(),
-                price: faker.commerce.price(),
-                thumbnail: faker.image.image()
-            });
-        }
+        const products = getProducts()
     
     res.status(200).send(products)
     } catch (error) {
